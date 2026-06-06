@@ -10,6 +10,22 @@ from selenium.webdriver.remote.webelement import WebElement
 
 _driver: WebDriver | None = None
 
+DISTRICT_URLS = {
+    "Holosiivskyi": ["https://lun.ua/sale/kyiv/flats-holosiivskyi-district"],
+    "Darnytskyi": ["https://lun.ua/sale/kyiv/flats-darnytskyi-district"],
+    "Desnianskyi": ["https://lun.ua/sale/kyiv/flats-desnianskyi-district"],
+    "Dniprovskyi": ["https://lun.ua/sale/kyiv/flats-dniprovskyi-district"],
+    "Obolonskyi": ["https://lun.ua/sale/kyiv/flats-obolonskyi-district"],
+    "Pecherskyi": ["https://lun.ua/sale/kyiv/flats-pecherskyi-district"],
+    "Podilskyi": ["https://lun.ua/sale/kyiv/flats-podilskyi-district"],
+    "Sviatoshynskyi": ["https://lun.ua/sale/kyiv/flats-sviatoshynskyi-district"],
+    "Solomianskyi": ["https://lun.ua/sale/kyiv/flats-solomianskyi-district"],
+    "Shevchenkivskyi": ["https://lun.ua/sale/kyiv/flats-shevchenkivskyi-district"],
+}
+
+CITY = "Kyiv"
+GEO_REGION = "Center"
+
 
 def get_driver() -> WebDriver:
     return _driver
@@ -31,6 +47,9 @@ class Apartment:
     floors_in_house: int
     year_of_building: int
     price: float
+    district: str = ""
+    city: str = ""
+    geo_region: str = ""
 
 
 APARTMENT_FIELDS = [field.name for field in dataclasses.fields(Apartment)]
@@ -69,7 +88,7 @@ def parse_single_apartment(apartment: WebElement) -> Apartment:
                 floor = int(floor_info[1])
                 floors_in_house = int(floor_info[3])
 
-            elif "Рік будівництва" in text:
+            elif "рік будівництва" in text:
                 year_of_building = int(text.split()[0])
 
         freshly_renovated = renovated_status == "з ремонтом"
@@ -155,7 +174,6 @@ def get_apartments(page_url: str) -> list[Apartment]:
         all_apartments.extend(apartments_on_page)
         page_number += 1
 
-    driver.quit()
     return all_apartments
 
 
@@ -169,7 +187,18 @@ def write_apartment_to_csv(apartments: [Apartment], file_name: str) -> None:
 def get_all_apartments() -> None:
     with webdriver.Chrome() as driver:
         set_driver(driver)
-        write_apartment_to_csv(get_apartments("https://lun.ua/sale/volyn/flats"), "Lutsk")
+        all_apartments = []
+
+        for district, urls in DISTRICT_URLS.items():
+            for url in urls:
+                apartments = get_apartments(url)
+                for apt in apartments:
+                    apt.district = district
+                    apt.city = CITY
+                    apt.geo_region = GEO_REGION
+                all_apartments.extend(apartments)
+
+        write_apartment_to_csv(all_apartments, f"{CITY}.csv")
 
 
 if __name__ == "__main__":
