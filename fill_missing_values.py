@@ -37,7 +37,6 @@ def impute_city_group(group: pd.DataFrame) -> pd.DataFrame:
     group[zero_cols] = knn_data_final[zero_cols]
     group["num_of_rooms"] = group["num_of_rooms"].round().astype(int)
     group["year_of_building"] = group["year_of_building"].round().astype(int)
-    group["area"] = group["year_of_building"].round().astype(int)
     return group
 
 
