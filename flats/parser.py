@@ -532,7 +532,7 @@ async def get_apartment_urls_from_page(page: Page) -> list[str]:
     try:
         html = await page.content()
         ids = re.findall(r"page_id:(\d+)", html)
-        for pid in dict.fromkeys(ids):  # de-dupe, preserve order
+        for pid in dict.fromkeys(ids):
             urls.append(f"https://lun.ua/realty/{pid}")
     except Exception as e:
         print(f"  Error getting URLs: {e}")
@@ -562,7 +562,6 @@ async def get_urls_from_listing(
             print(f"  No cards on page {page_number}, stopping")
             break
 
-        # Перемикаємо $ ТІЛЬКИ якщо ще не в доларах
         try:
             cards_with_price = await page.query_selector_all(
                 '[class*="RealtyCard_priceSqm"]'
@@ -585,6 +584,8 @@ async def get_urls_from_listing(
         except Exception:
             pass
 
+        # Чекаємо поки завантажаться дані карток (id тепер беремо з
+        # data-event-options="...|page_id:...|...", а не з href)
         urls = await get_apartment_urls_from_page(page)
         print(f"  Apartment ids found on page: {len(urls)}")
         if not urls:
@@ -661,7 +662,13 @@ async def parse_detail_page(url: str, page: Page, retries: int = 3) -> Apartment
             except Exception:
                 pass
 
-            items = await page.query_selector_all(".PropertyItem_item__b9xcp")
+            # Всі властивості — ітеруємось по контейнерах (іконка + текст)
+            # ЛИШЕ в межах головних блоків деталей, щоб не підхопити такий
+            # самий елемент з картки "схожих оголошень" нижче на сторінці
+            items = await page.query_selector_all(
+                '[class*="RealtyProperties_root"] .PropertyItem_item__b9xcp, '
+                '[class*="RealtyListOfDetails_list"] .PropertyItem_item__b9xcp'
+            )
             for item in items:
                 text_el = await item.query_selector(".PropertyItem_text__IADK7")
                 if text_el is None:
@@ -713,16 +720,22 @@ async def parse_detail_page(url: str, page: Page, retries: int = 3) -> Apartment
                         pass
 
                 elif "рік будівництва" in text:
-                    try:
-                        apt.year_of_building = int(text.split()[0])
-                    except ValueError:
-                        pass
+                    m = re.search(r"\d{3,4}", text)
+                    if m:
+                        try:
+                            apt.year_of_building = int(m.group(0))
+                        except ValueError:
+                            pass
 
                 elif "рем" in text:
                     apt.freshly_renovated = text == "з ремонтом"
 
-            if apt.house_type is None or apt.heating is None or apt.wall_type is None:
-                print(f"  Skipped (missing required fields): {url}")
+            if (
+                apt.house_type is None or apt.house_type == "Other"
+                or apt.heating is None or apt.heating == "Other"
+                or apt.wall_type is None or apt.wall_type == "Other"
+            ):
+                print(f"  Skipped (missing/unrecognized required fields): {url}")
                 return None
 
             return apt
@@ -886,7 +899,6 @@ async def process_city(
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False)
-
         scan_chunks = chunk_list(listing_tasks, num_scan_workers)
         scan_lock = asyncio.Lock()
         results = await asyncio.gather(*[
@@ -916,6 +928,7 @@ async def process_city(
 # ========================
 # MAIN
 # ========================
+
 async def main() -> None:
     for city_config in CITIES:
         await process_city(city_config, num_scan_workers=3, num_detail_workers=5)
