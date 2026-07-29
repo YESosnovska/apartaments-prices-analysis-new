@@ -1,5 +1,7 @@
 import asyncio
 import csv
+import json
+import math
 import os
 import re
 from dataclasses import dataclass, field, fields
@@ -10,59 +12,92 @@ from playwright.async_api import async_playwright, Page, Browser
 # DATA STRUCTURES
 # ========================
 
-HOUSE_TYPE_MAP = {
-    "чеський проект": "czech_project",
-    "гостинка": "hostel",
-    "хрущівка": "khrushchivka",
-    "дореволюційний": "pre_revolutionary",
-    "новобудова": "new_build",
-    "сталінка": "stalinka",
+
+def haversine(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Відстань по великому колу (км) між двома точками (lat, lon)."""
+    r = 6371.0
+    phi1, phi2 = math.radians(lat1), math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lon2 - lon1)
+    a = math.sin(dphi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
+    return 2 * r * math.asin(math.sqrt(a))
+
+
+CITY_CENTERS: dict[str, tuple[float, float]] = {
+    "Kyiv": (50.4501, 30.5234),
+    "Lviv": (49.8397, 24.0297),
+    "Kharkiv": (50.0038, 36.2304),
+    "Dnipro": (48.4647, 35.0462),
+    "Zaporizhzhia": (47.8388, 35.1396),
+    "Odesa": (46.4825, 30.7233),
+    "Poltava": (49.5883, 34.5514),
+    "Mykolaiv": (46.9750, 31.9946),
+    "Cherkasy": (49.4444, 32.0598),
+    "Kropyvnytskyi": (48.5079, 32.2623),
+    "Sumy": (50.9077, 34.7981),
+    "Chernihiv": (51.4982, 31.2893),
+    "Zhytomyr": (50.2547, 28.6587),
+    "Lutsk": (50.7472, 25.3254),
+    "Ivano-Frankivsk": (48.9215, 24.7097),
+    "Ternopil": (49.5535, 25.5948),
+    "Khmelnytskyi": (49.4230, 26.9871),
+    "Uzhhorod": (48.6208, 22.2879),
+    "Vinnytsia": (49.2331, 28.4682),
+    "Rivne": (50.6199, 26.2516),
+    "Chernivtsi": (48.2917, 25.9352),
+    "Kherson": (46.6354, 32.6169)
 }
-
-HEATING_MAP = {
-    "автономне опалення": "autonomous",
-    "індивідуальне опалення": "individual",
-    "централізоване опалення": "centralized",
-}
-
-WALL_TYPE_MAP = {
-    "блочна технологія": "block",
-    "монолітно-каркасна": "monolithic_frame",
-    "панельна технологія": "panel",
-    "утеплена панель": "insulated_panel",
-    "цегляна технологія": "brick",
-}
-
-
-def map_text_or_other(text_lower: str, mapping: dict[str, str]) -> str:
-    """Look up a known UA label in `mapping`; any recognized-field value that
-    isn't in the map (a house type / wall type / heating type we don't have
-    a code for yet) is recorded as "Other" instead of leaving the field
-    unset / causing the apartment to be skipped."""
-    for ua, en in mapping.items():
-        if ua in text_lower:
-            return en
-    return "Other"
 
 
 @dataclass
 class Apartment:
+    # Ідентифікація
+    group_id: str | None = None
+    has_duplicates: bool | None = None
+    url: str | None = None
+
+    # Локація
+    city: str = ""
+    district: str = ""
+    residential_complex: str | None = None
+    lat: float | None = None
+    lon: float | None = None
+    distance_to_center_km: float | None = None
+    poi_name: str | None = None
+    poi_distance_m: float | None = None
+    geo_region: str = ""
+
+    price: float | None = None
+
     num_of_rooms: int | None = None
-    freshly_renovated: bool | None = None
     area: float | None = None
     living_area: float | None = None
     kitchen_area: float | None = None
     floor: int | None = None
     floors_in_house: int | None = None
-    year_of_building: int | None = None
-    price: float | None = None
     house_type: str | None = None
     heating: str | None = None
     wall_type: str | None = None
-    url: str | None = None
-    district: str = ""
-    city: str = ""
-    geo_region: str = ""
+    year_of_building: int | None = None
+    ceiling_height: float | None = None
+    freshly_renovated: bool | None = None
+
+    bedroom_count: int | None = None
+    balcony_count: int | None = None
+    toilets_count: int | None = None
+    kitchen_type: str | None = None
+    hot_water_type: str | None = None
+
+    has_gas: bool | None = None
+    autonomy_power: bool | None = None
+    autonomy_heat: bool | None = None
+    autonomy_water: bool | None = None
+    autonomy_net: bool | None = None
+    autonomy_lift: bool | None = None
+
+    without_commission: int = 0
+    is_exclusive: int = 0
+    text: str = ""
 
 
 # ========================
@@ -520,14 +555,6 @@ async def switch_to_usd_list(page: Page) -> None:
 
 
 async def get_apartment_urls_from_page(page: Page) -> list[str]:
-    """
-    On listing/category pages, apartment cards are rendered as <button> elements
-    with client-side (JS) routing — they have NO <a href="/realty/..."> at all.
-    (Only the "recommended" cards on individual realty *detail* pages use real
-    <a href> anchors.) Every card, button or anchor, still carries its numeric
-    listing id via data-event-options="...|page_id:1234567890|...", so we pull
-    ids from that instead of relying on hrefs.
-    """
     urls = []
     try:
         html = await page.content()
@@ -552,7 +579,6 @@ async def get_urls_from_listing(
         print(f"  Scanning page: {paginated_url}")
         await page.goto(paginated_url, wait_until="domcontentloaded", timeout=15000)
 
-        # Чекаємо картки
         try:
             await page.wait_for_selector(
                 '[class*="RealtyCard_propertyGrid"]', timeout=10000
@@ -584,8 +610,6 @@ async def get_urls_from_listing(
         except Exception:
             pass
 
-        # Чекаємо поки завантажаться дані карток (id тепер беремо з
-        # data-event-options="...|page_id:...|...", а не з href)
         urls = await get_apartment_urls_from_page(page)
         print(f"  Apartment ids found on page: {len(urls)}")
         if not urls:
@@ -603,7 +627,7 @@ async def get_urls_from_listing(
 
 
 # ========================
-# PARSING — DETAIL PAGE
+# PARSING — DETAIL PAGE (JSON-based)
 # ========================
 
 async def switch_to_usd_detail(page: Page) -> None:
@@ -627,11 +651,111 @@ async def switch_to_usd_detail(page: Page) -> None:
         pass
 
 
+def extract_realty_json(html: str) -> dict | None:
+    for marker, escaped in (('\\"data\\":{\\"id\\"', True), ('"data":{"id"', False)):
+        idx = html.find(marker)
+        if idx == -1:
+            continue
+
+        start = idx + (len('\\"data\\":') if escaped else len('"data":'))
+        depth = 0
+        in_str = False
+        i = start
+        n = len(html)
+        end = None
+
+        while i < n:
+            ch = html[i]
+            if escaped:
+                if ch == "\\" and i + 1 < n and html[i + 1] == '"':
+                    in_str = not in_str
+                    i += 2
+                    continue
+                if ch == "\\" and i + 1 < n and html[i + 1] == "\\":
+                    i += 2
+                    continue
+            else:
+                if ch == '"':
+                    in_str = not in_str
+                    i += 1
+                    continue
+                if ch == "\\":
+                    i += 2
+                    continue
+
+            if not in_str:
+                if ch == "{":
+                    depth += 1
+                elif ch == "}":
+                    depth -= 1
+                    if depth == 0:
+                        end = i + 1
+                        break
+            i += 1
+
+        if end is None:
+            continue
+
+        raw = html[start:end]
+        if escaped:
+            raw = raw.replace('\\"', '"').replace("\\\\", "\\")
+
+        try:
+            return json.loads(raw)
+        except (json.JSONDecodeError, ValueError):
+            continue
+
+    return None
+
+
+def resolve_text_reference(html: str, text_value: str | None) -> str:
+    if not text_value:
+        return ""
+
+    m = re.match(r"^\$([0-9a-f]+)$", text_value)
+    if not m:
+        return text_value
+
+    ref_id = m.group(1)
+    decl_match = re.search(re.escape(ref_id) + r":T[0-9a-f]+,", html)
+    if not decl_match:
+        return ""
+
+    push_marker = 'self.__next_f.push([1,"'
+    start = html.find(push_marker, decl_match.end())
+    if start == -1:
+        return ""
+    start += len(push_marker)
+
+    i = start
+    n = len(html)
+    while i < n:
+        if html[i] == "\\":
+            i += 2
+            continue
+        if html[i] == '"':
+            break
+        i += 1
+    raw = html[start:i]
+
+    try:
+        return json.loads('"' + raw + '"')
+    except (json.JSONDecodeError, ValueError):
+        return raw
+
+
+def parse_renovation_fallback(text_lower: str) -> bool | None:
+    if "євроремонт" in text_lower or "дизайнерськ" in text_lower or "з ремонтом" in text_lower:
+        return True
+    if "без ремонту" in text_lower or "потребує ремонту" in text_lower:
+        return False
+    return None
+
+
 async def parse_detail_page(url: str, page: Page, retries: int = 3) -> Apartment | None:
     for attempt in range(retries):
         try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=15000)
-
+            await page.goto(url, wait_until="domcontentloaded", timeout=20000)
             await page.wait_for_function(
                 '''() => {
                     return document.querySelector(".error-content") ||
@@ -640,102 +764,85 @@ async def parse_detail_page(url: str, page: Page, retries: int = 3) -> Apartment
                 timeout=10000
             )
 
-            # Видалене оголошення
             if await page.query_selector(".error-content"):
                 print(f"  Deleted: {url}")
                 return None
 
             await switch_to_usd_detail(page)
 
+            html = await page.content()
+            data = extract_realty_json(html)
+            if data is None:
+                print(f"  JSON not found (page structure changed?): {url}")
+                return None
+
             apt = Apartment(url=url)
 
-            # Ціна за м²
-            try:
-                price_el = await page.query_selector('[class*="RealtyDetails_priceSqm"]')
-                if price_el:
-                    price_text = (await price_el.inner_text()).strip()
-                    if "$" in price_text:
-                        apt.price = float(
-                            price_text.split("$")[0].strip()
-                            .replace(" ", "").replace("\xa0", "")
-                        )
-            except Exception:
-                pass
+            apt.group_id = data.get("groupId")
+            apt.has_duplicates = data.get("hasDuplicates")
 
-            # Всі властивості — ітеруємось по контейнерах (іконка + текст)
-            # ЛИШЕ в межах головних блоків деталей, щоб не підхопити такий
-            # самий елемент з картки "схожих оголошень" нижче на сторінці
-            items = await page.query_selector_all(
-                '[class*="RealtyProperties_root"] .PropertyItem_item__b9xcp, '
-                '[class*="RealtyListOfDetails_list"] .PropertyItem_item__b9xcp'
+            apt.price = data.get("priceSqm")
+
+            apt.num_of_rooms = data.get("roomCount")
+            apt.area = data.get("areaTotal")
+            apt.living_area = data.get("areaLiving")
+            apt.kitchen_area = data.get("areaKitchen")
+
+            apt.floor = data.get("floor")
+            apt.floors_in_house = data.get("floorCount")
+            apt.house_type = data.get("houseTypeName")
+            apt.wall_type = data.get("wallTypeName")
+            apt.heating = data.get("heatingSystemName")
+            apt.year_of_building = data.get("builtYear")
+            apt.ceiling_height = data.get("ceilingHeight")
+
+            apt.has_gas = data.get("hasGas")
+            apt.autonomy_power = data.get("autonomyPower")
+            apt.autonomy_heat = data.get("autonomyHeat")
+            apt.autonomy_water = data.get("autonomyWater")
+            apt.autonomy_net = data.get("autonomyNet")
+            apt.autonomy_lift = data.get("autonomyLift")
+
+            house_data = data.get("houseData") or {}
+            apt.bedroom_count = house_data.get("bedroomCount")
+            balcony_count = house_data.get("balconyCount")
+            apt.balcony_count = balcony_count if balcony_count is not None and balcony_count >= 0 else None
+            apt.toilets_count = house_data.get("toiletsCount")
+            apt.kitchen_type = house_data.get("kitchenTypeName")
+            apt.hot_water_type = house_data.get("hotWaterName")
+
+            apt.without_commission = int(bool(data.get("withoutCommission")))
+            apt.is_exclusive = int(bool(data.get("isExclusive")))
+
+            text = resolve_text_reference(html, data.get("text"))
+            apt.text = text
+            text_lower = text.lower()
+
+            without_renovation = data.get("withoutRenovation")
+            apt.freshly_renovated = (
+                not without_renovation if without_renovation is not None
+                else parse_renovation_fallback(text_lower)
             )
-            for item in items:
-                text_el = await item.query_selector(".PropertyItem_text__IADK7")
-                if text_el is None:
-                    continue
-                text = (await text_el.inner_text()).strip()
-                text_lower = text.lower()
 
-                icon_key = None
-                use_el = await item.query_selector("use")
-                if use_el is not None:
-                    href = await use_el.get_attribute("xlink:href")
-                    if not href:
-                        href = await use_el.get_attribute("href")
-                    if href and "#" in href:
-                        icon_key = href.split("#")[-1]
+            location = data.get("location")
+            if location and len(location) == 2:
+                apt.lon, apt.lat = location[0], location[1]
 
-                if icon_key == "realty/house-type":
-                    apt.house_type = map_text_or_other(text_lower, HOUSE_TYPE_MAP)
-                    continue
-                elif icon_key == "realty/wall":
-                    apt.wall_type = map_text_or_other(text_lower, WALL_TYPE_MAP)
-                    continue
-                elif icon_key == "realty/heating":
-                    apt.heating = map_text_or_other(text_lower, HEATING_MAP)
-                    continue
+            poi = data.get("poi")
+            if poi:
+                apt.poi_name = poi.get("name")
+                apt.poi_distance_m = poi.get("distance")
 
-                if "кімн" in text:
-                    try:
-                        apt.num_of_rooms = int(text.split()[0])
-                    except ValueError:
-                        pass
-
-                elif "м²" in text and "/" in text:
-                    try:
-                        clean = text.replace("м²", "").strip()
-                        parts = [p.strip() for p in clean.split("/")]
-                        apt.area = float(parts[0]) if parts[0] != "-" else None
-                        apt.living_area = float(parts[1]) if parts[1] != "-" else None
-                        apt.kitchen_area = float(parts[2]) if parts[2] != "-" else None
-                    except (ValueError, IndexError):
-                        pass
-
-                elif "поверх" in text and "рік" not in text:
-                    try:
-                        floor_info = text.split()
-                        apt.floor = int(floor_info[1])
-                        apt.floors_in_house = int(floor_info[3])
-                    except (ValueError, IndexError):
-                        pass
-
-                elif "рік будівництва" in text:
-                    m = re.search(r"\d{3,4}", text)
-                    if m:
-                        try:
-                            apt.year_of_building = int(m.group(0))
-                        except ValueError:
-                            pass
-
-                elif "рем" in text:
-                    apt.freshly_renovated = text == "з ремонтом"
+            for entity in data.get("geoEntities") or []:
+                if entity.get("type") == "residential_complex":
+                    apt.residential_complex = entity.get("name")
 
             if (
-                apt.house_type is None or apt.house_type == "Other"
-                or apt.heating is None or apt.heating == "Other"
-                or apt.wall_type is None or apt.wall_type == "Other"
+                apt.house_type is None or apt.wall_type is None or apt.heating is None
+                or apt.area is None or apt.num_of_rooms is None
+                or apt.floor is None or apt.floors_in_house is None
             ):
-                print(f"  Skipped (missing/unrecognized required fields): {url}")
+                print(f"  Skipped (missing required fields): {url}")
                 return None
 
             return apt
@@ -767,9 +874,6 @@ def write_apartment_to_csv(apartment: Apartment, filename: str) -> None:
 
 
 def append_links_to_csv(rows: list[LinkRow], filename: str) -> None:
-    """Append newly found listing URLs to the links CSV right away (called
-    after every scanned page), so the file grows incrementally instead of
-    only being written once the whole city is scanned."""
     if not rows:
         return
     file_exists = os.path.exists(filename)
@@ -781,9 +885,6 @@ def append_links_to_csv(rows: list[LinkRow], filename: str) -> None:
 
 
 def read_links_from_csv(filename: str) -> list[LinkRow]:
-    """Read back the links CSV for the detail-parsing stage, de-duping by
-    URL (the same listing can occasionally appear via more than one
-    district/microdistrict page)."""
     rows: list[LinkRow] = []
     seen: set[str] = set()
     if not os.path.exists(filename):
@@ -815,8 +916,6 @@ async def scan_worker(
     lock: asyncio.Lock,
     browser: Browser,
 ) -> int:
-    """Scans a slice of listing/district pages with its own page, writing
-    found URLs to links_filename as soon as each listing page is scanned."""
     page = await browser.new_page()
     total_found = 0
     try:
@@ -852,6 +951,10 @@ async def detail_worker(
             apt.district = district
             apt.city = city
             apt.geo_region = geo_region
+
+            center = CITY_CENTERS.get(city)
+            if center and center != (0.0, 0.0) and apt.lat is not None and apt.lon is not None:
+                apt.distance_to_center_km = haversine(apt.lat, apt.lon, center[0], center[1])
 
             async with lock:
                 write_apartment_to_csv(apt, csv_filename)
@@ -931,7 +1034,7 @@ async def process_city(
 
 async def main() -> None:
     for city_config in CITIES:
-        await process_city(city_config, num_scan_workers=3, num_detail_workers=5)
+        await process_city(city_config, num_scan_workers=8, num_detail_workers=12)
 
 
 if __name__ == "__main__":
