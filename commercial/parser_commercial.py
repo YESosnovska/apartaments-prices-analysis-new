@@ -708,7 +708,7 @@ async def process_city(
 
 async def main() -> None:
     for city_config in COMMERCIAL_CITIES:
-        await process_city(city_config, num_scan_workers=3, num_detail_workers=5)
+        await process_city(city_config, num_scan_workers=8, num_detail_workers=12)
 
 
 if __name__ == "__main__":
