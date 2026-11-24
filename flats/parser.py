@@ -116,414 +116,417 @@ class CityConfig:
 
 CITIES: list[CityConfig] = [
     # KYIV — окремо по районах
-    CityConfig(
-        city="Kyiv",
-        geo_region="Center",
-        district_urls={
-            "Holosiivskyi": ["https://lun.ua/sale/kyiv/flats-holosiivskyi-district"],
-            "Darnytskyi": ["https://lun.ua/sale/kyiv/flats-darnytskyi-district"],
-            "Desnianskyi": ["https://lun.ua/sale/kyiv/flats-desnianskyi-district"],
-            "Dniprovskyi": ["https://lun.ua/sale/kyiv/flats-dniprovskyi-district"],
-            "Obolonskyi": ["https://lun.ua/sale/kyiv/flats-obolonskyi-district"],
-            "Pecherskyi": ["https://lun.ua/sale/kyiv/flats-pecherskyi-district"],
-            "Podilskyi": ["https://lun.ua/sale/kyiv/flats-podilskyi-district"],
-            "Sviatoshynskyi": ["https://lun.ua/sale/kyiv/flats-sviatoshynskyi-district"],
-            "Solomianskyi": ["https://lun.ua/sale/kyiv/flats-solomianskyi-district"],
-            "Shevchenkivskyi": ["https://lun.ua/sale/kyiv/flats-shevchenkivskyi-district"],
-        }
-    ),
-    # WEST
-    CityConfig(
-        city="Lutsk",
-        geo_region="West",
-        center_urls=["https://lun.ua/sale/volyn/flats-tsentr"],
-        residential_urls=[
-            "https://lun.ua/sale/volyn/flats-teremno",
-            "https://lun.ua/sale/volyn/flats-33-i-mikroraion",
-            "https://lun.ua/sale/volyn/flats-55-i-mikroraion",
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/volyn/flats-hnydava",
-            "https://lun.ua/sale/volyn/flats-boholiuby",
-            "https://lun.ua/sale/volyn/flats-tarasove",
-        ],
-    ),
-
-    CityConfig(
-        city="Lviv",
-        geo_region="West",
-        center_urls=["https://lun.ua/sale/lviv/flats-tsentr"],
-        residential_urls=[
-            "https://lun.ua/sale/lviv/flats-sykhiv",
-            "https://lun.ua/sale/lviv/flats-zaliznychnyi-district",
-            "https://lun.ua/sale/lviv/flats-frankivskyi-district",
-            "https://lun.ua/sale/lviv/flats-lychakivskyi-district",
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/lviv/flats-shevchenkivskyi-district",
-            "https://lun.ua/sale/lviv/flats-sykhiv",
-            "https://lun.ua/sale/lviv/flats-zboishcha"
-        ],
-    ),
-    CityConfig(
-        city="Ivano-Frankivsk",
-        geo_region="West",
-        center_urls=["https://lun.ua/sale/if/flats-tsentr",
-                     "https://lun.ua/sale/if/flats-sofiivka"],
-        residential_urls=[
-            "https://lun.ua/sale/if/flats-kniahynyn",
-            "https://lun.ua/sale/if/flats-naberezhna",
-            "https://lun.ua/sale/if/flats-hirka",
-            "https://lun.ua/sale/if/flats-budivelnykiv",
-            "https://lun.ua/sale/if/flats-kant",
-            "https://lun.ua/sale/if/flats-patriot"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/if/flats-kaskad",
-            "https://lun.ua/sale/if/flats-braty",
-            "https://lun.ua/sale/if/flats-pozytron",
-            "https://lun.ua/sale/if/flats-opryshivtsi"
-        ],
-    ),
-    CityConfig(
-        city="Ternopil",
-        geo_region="West",
-        center_urls=["https://lun.ua/sale/ternopil/flats-tsentr",
-                     "https://lun.ua/sale/ternopil/flats-staryi-park",
-                     "https://lun.ua/sale/ternopil/flats-novyi-svit",
-                     "https://lun.ua/sale/ternopil/flats-obolonia"],
-        residential_urls=[
-            "https://lun.ua/sale/ternopil/flats-druzhba",
-            "https://lun.ua/sale/ternopil/flats-bam",
-            "https://lun.ua/sale/ternopil/flats-lvivska-st",
-            "https://lun.ua/sale/ternopil/flats-hlyboka-st"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/ternopil/flats-pivnichnyi",
-            "https://lun.ua/sale/ternopil/flats-aliaska",
-            "https://lun.ua/sale/ternopil/flats-promyslovyi",
-            "https://lun.ua/sale/ternopil/flats-mykulynetska-st",
-            "https://lun.ua/sale/ternopil/flats-kutkivtsi"
-        ],
-    ),
-    CityConfig(
-        city="Khmelnytskyi",
-        geo_region="West",
-        center_urls=["https://lun.ua/sale/khmelnytskyi/flats-tsentr",
-                     "https://lun.ua/sale/khmelnytskyi/flats-nyzhnia-berehova-st"],
-        residential_urls=[
-            "https://lun.ua/sale/khmelnytskyi/flats-pivdenno-zakhidnyi",
-            "https://lun.ua/sale/khmelnytskyi/flats-dubovo",
-            "https://lun.ua/sale/khmelnytskyi/flats-hrechany",
-            "https://lun.ua/sale/khmelnytskyi/flats-rakovo",
-            "https://lun.ua/sale/khmelnytskyi/flats-bolhary"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/khmelnytskyi/flats-knyzhkivtsi",
-            "https://lun.ua/sale/khmelnytskyi/flats-leznevo",
-            "https://lun.ua/sale/khmelnytskyi/flats-ruzhychna",
-            "https://lun.ua/sale/khmelnytskyi/flats-oleshyn",
-            "https://lun.ua/sale/khmelnytskyi/flats-sharovechka-10025534"
-        ],
-    ),
-    CityConfig(
-        city="Uzhhorod",
-        geo_region="West",
-        center_urls=["https://lun.ua/sale/uz/flats-tsentr",
-                     "https://lun.ua/sale/uz/flats-sobranetska-st"],
-        residential_urls=[
-            "https://lun.ua/sale/uz/flats-novyi",
-            "https://lun.ua/sale/uz/flats-vokzal",
-            "https://lun.ua/sale/uz/flats-shakhta",
-            "https://lun.ua/sale/uz/flats-radvanka",
-            "https://lun.ua/sale/uz/flats-natsionalnoi-hvardii-st",
-            "https://lun.ua/sale/uz/flats-zahorska-st"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/uz/flats-shakhta",
-        ],
-    ),
+    # CityConfig(
+    #     city="Kyiv",
+    #     geo_region="Center",
+    #     district_urls={
+    #         "Holosiivskyi": ["https://lun.ua/sale/kyiv/flats-holosiivskyi-district"],
+    #         "Darnytskyi": ["https://lun.ua/sale/kyiv/flats-darnytskyi-district"],
+    #         "Desnianskyi": ["https://lun.ua/sale/kyiv/flats-desnianskyi-district"],
+    #         "Dniprovskyi": ["https://lun.ua/sale/kyiv/flats-dniprovskyi-district"],
+    #         "Obolonskyi": ["https://lun.ua/sale/kyiv/flats-obolonskyi-district"],
+    #         "Pecherskyi": ["https://lun.ua/sale/kyiv/flats-pecherskyi-district"],
+    #         "Podilskyi": ["https://lun.ua/sale/kyiv/flats-podilskyi-district"],
+    #         "Sviatoshynskyi": ["https://lun.ua/sale/kyiv/flats-sviatoshynskyi-district"],
+    #         "Solomianskyi": ["https://lun.ua/sale/kyiv/flats-solomianskyi-district"],
+    #         "Shevchenkivskyi": ["https://lun.ua/sale/kyiv/flats-shevchenkivskyi-district"],
+    #     }
+    # ),
+    # # WEST
+    # CityConfig(
+    #     city="Lutsk",
+    #     geo_region="West",
+    #     center_urls=["https://lun.ua/sale/volyn/flats-tsentr"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/volyn/flats-teremno",
+    #         "https://lun.ua/sale/volyn/flats-33-i-mikroraion",
+    #         "https://lun.ua/sale/volyn/flats-55-i-mikroraion",
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/volyn/flats-hnydava",
+    #         "https://lun.ua/sale/volyn/flats-boholiuby",
+    #         "https://lun.ua/sale/volyn/flats-tarasove",
+    #     ],
+    # ),
+    #
+    # CityConfig(
+    #     city="Lviv",
+    #     geo_region="West",
+    #     center_urls=["https://lun.ua/sale/lviv/flats-tsentr"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/lviv/flats-sykhiv",
+    #         "https://lun.ua/sale/lviv/flats-zaliznychnyi-district",
+    #         "https://lun.ua/sale/lviv/flats-frankivskyi-district",
+    #         "https://lun.ua/sale/lviv/flats-lychakivskyi-district",
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/lviv/flats-shevchenkivskyi-district",
+    #         "https://lun.ua/sale/lviv/flats-sykhiv",
+    #         "https://lun.ua/sale/lviv/flats-zboishcha"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Ivano-Frankivsk",
+    #     geo_region="West",
+    #     center_urls=["https://lun.ua/sale/if/flats-tsentr",
+    #                  "https://lun.ua/sale/if/flats-sofiivka"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/if/flats-kniahynyn",
+    #         "https://lun.ua/sale/if/flats-naberezhna",
+    #         "https://lun.ua/sale/if/flats-hirka",
+    #         "https://lun.ua/sale/if/flats-budivelnykiv",
+    #         "https://lun.ua/sale/if/flats-kant",
+    #         "https://lun.ua/sale/if/flats-patriot"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/if/flats-kaskad",
+    #         "https://lun.ua/sale/if/flats-braty",
+    #         "https://lun.ua/sale/if/flats-pozytron",
+    #         "https://lun.ua/sale/if/flats-opryshivtsi"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Ternopil",
+    #     geo_region="West",
+    #     center_urls=["https://lun.ua/sale/ternopil/flats-tsentr",
+    #                  "https://lun.ua/sale/ternopil/flats-staryi-park",
+    #                  "https://lun.ua/sale/ternopil/flats-novyi-svit",
+    #                  "https://lun.ua/sale/ternopil/flats-obolonia"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/ternopil/flats-druzhba",
+    #         "https://lun.ua/sale/ternopil/flats-bam",
+    #         "https://lun.ua/sale/ternopil/flats-lvivska-st",
+    #         "https://lun.ua/sale/ternopil/flats-hlyboka-st"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/ternopil/flats-pivnichnyi",
+    #         "https://lun.ua/sale/ternopil/flats-aliaska",
+    #         "https://lun.ua/sale/ternopil/flats-promyslovyi",
+    #         "https://lun.ua/sale/ternopil/flats-mykulynetska-st",
+    #         "https://lun.ua/sale/ternopil/flats-kutkivtsi"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Khmelnytskyi",
+    #     geo_region="West",
+    #     center_urls=["https://lun.ua/sale/khmelnytskyi/flats-tsentr",
+    #                  "https://lun.ua/sale/khmelnytskyi/flats-nyzhnia-berehova-st"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/khmelnytskyi/flats-pivdenno-zakhidnyi",
+    #         "https://lun.ua/sale/khmelnytskyi/flats-dubovo",
+    #         "https://lun.ua/sale/khmelnytskyi/flats-hrechany",
+    #         "https://lun.ua/sale/khmelnytskyi/flats-rakovo",
+    #         "https://lun.ua/sale/khmelnytskyi/flats-bolhary"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/khmelnytskyi/flats-knyzhkivtsi",
+    #         "https://lun.ua/sale/khmelnytskyi/flats-leznevo",
+    #         "https://lun.ua/sale/khmelnytskyi/flats-ruzhychna",
+    #         "https://lun.ua/sale/khmelnytskyi/flats-oleshyn",
+    #         "https://lun.ua/sale/khmelnytskyi/flats-sharovechka-10025534"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Uzhhorod",
+    #     geo_region="West",
+    #     center_urls=["https://lun.ua/sale/uz/flats-tsentr",
+    #                  "https://lun.ua/sale/uz/flats-sobranetska-st"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/uz/flats-novyi",
+    #         "https://lun.ua/sale/uz/flats-vokzal",
+    #         "https://lun.ua/sale/uz/flats-radvanka",
+    #         "https://lun.ua/sale/uz/flats-natsionalnoi-hvardii-st",
+    #         "https://lun.ua/sale/uz/flats-zahorska-st"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/uz/flats-shakhta",
+    #     ],
+    # ),
     CityConfig(
         city="Chernivtsi",
         geo_region="West",
-        center_urls=["https://lun.ua/sale/chernivtsi/flats-tsentr"],
+        center_urls=["https://lun.ua/sale/chernivtsi/flats-tsentr",
+                     "https://lun.ua/sale/chernivtsi/flats-parkova-zona"],
         residential_urls=[
-            "https://lun.ua/sale/chernivtsi/flats-pershyi-miroraion",
-            "https://lun.ua/sale/chernivtsi/flats-kalinets",
+            "https://lun.ua/sale/chernivtsi/flats-komarova-chervonoarmiiska",
+            "https://lun.ua/sale/chernivtsi/flats-hraviton",
+            "https://lun.ua/sale/chernivtsi/flats-ruska-st"
         ],
         outskirts_urls=[
-            "https://lun.ua/sale/uz/flats-dravtsi",
-            "https://lun.ua/sale/uz/flats-chervenytsia",
-            "https://lun.ua/sale/uz/flats-minai",
-            "https://lun.ua/sale/uz/flats-storozhnytsia",
-            "https://lun.ua/sale/uz/flats-yenkivska-st"
+            "https://lun.ua/sale/chernivtsi/flats-kalychanka",
+            "https://lun.ua/sale/chernivtsi/flats-klokuchka",
+            "https://lun.ua/sale/chernivtsi/flats-aeroport",
+            "https://lun.ua/sale/chernivtsi/flats-kempinh",
+            "https://lun.ua/sale/chernivtsi/flats-chahor",
+            "https://lun.ua/sale/chernivtsi/flats-kitsman",
+            "https://lun.ua/sale/chernivtsi/flats-luzhany"
         ],
     ),
-    CityConfig(
-        city="Rivne",
-        geo_region="West",
-        center_urls=["https://lun.ua/sale/rivne/flats-tsentr",
-                     "https://lun.ua/sale/rivne/flats-dvorets",
-                     "https://lun.ua/sale/rivne/flats-avtovokzal",
-                     "https://lun.ua/sale/rivne/flats-hrabnyk"],
-        residential_urls=[
-            "https://lun.ua/sale/rivne/flats-mototrek",
-            "https://lun.ua/sale/rivne/flats-studentska-st",
-            "https://lun.ua/sale/rivne/flats-basiv-kut",
-            "https://lun.ua/sale/rivne/flats-korolova-st"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/rivne/flats-pivnichnyi",
-            "https://lun.ua/sale/rivne/flats-novyi-dvir",
-            "https://lun.ua/sale/rivne/flats-mlynivska-st",
-            "https://lun.ua/sale/rivne/flats-kolodenka",
-            "https://lun.ua/sale/rivne/flats-barmaky"
-        ],
-    ),
-
-    # NORTH!!!!!!
-    CityConfig(
-        city="Zhytomyr",
-        geo_region="North",
-        center_urls=["https://lun.ua/sale/zhytomyr/flats-tsentr"],
-        residential_urls=[
-            "https://lun.ua/sale/zhytomyr/flats-vokzal",
-            "https://lun.ua/sale/zhytomyr/flats-chudnivska-st",
-            "https://lun.ua/sale/zhytomyr/flats-seletska-st"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/zhytomyr/flats-oliivka-10016953",
-            "https://lun.ua/sale/zhytomyr/flats-zarichany-10007890",
-            "https://lun.ua/sale/zhytomyr/flats-hlybochytsia",
-            "https://lun.ua/sale/zhytomyr/flats-huiva"
-        ],
-    ),
-    CityConfig(
-        city="Chernihiv",
-        geo_region="North",
-        center_urls=["https://lun.ua/sale/chernihiv/flats-tsentr",
-                     "https://lun.ua/sale/chernihiv/flats-val",
-                     "https://lun.ua/sale/chernihiv/flats-myru-ave",
-                     "https://lun.ua/sale/chernihiv/flats-liskovytsia",
-                     "https://lun.ua/sale/chernihiv/flats-miskyi-sad"],
-        residential_urls=[
-            "https://lun.ua/sale/chernihiv/flats-yalivshchyna",
-            "https://lun.ua/sale/chernihiv/flats-bobrovytsia",
-            "https://lun.ua/sale/chernihiv/flats-ivana-vyhovskoho-st",
-            "https://lun.ua/sale/chernihiv/flats-berizky"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/chernihiv/flats-rivnopillia",
-            "https://lun.ua/sale/chernihiv/flats-kozelets"
-        ],
-    ),
-    CityConfig(
-        city="Sumy",
-        geo_region="North",
-        center_urls=["https://lun.ua/sale/sumy/flats-tsentr",
-                     "https://lun.ua/sale/sumy/flats-avtovokzal"],
-        residential_urls=[
-            "https://lun.ua/sale/sumy/flats-9-i-mikroraion",
-            "https://lun.ua/sale/sumy/flats-11-i-mikroraion",
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/sumy/flats-kurskyi",
-            "https://lun.ua/sale/sumy/flats-basy",
-            "https://lun.ua/sale/sumy/flats-bilopilskyi-shliakh-st",
-            "https://lun.ua/sale/sumy/flats-sad",
-            "https://lun.ua/sale/sumy/flats-kosivshchyna"
-        ],
-    ),
-
-    # CENTER
-    CityConfig(
-        city="Vinnytsia",
-        geo_region="Center",
-        center_urls=["https://lun.ua/sale/vinnytsia/flats-tsentr",
-                     "https://lun.ua/sale/vinnytsia/flats-zamostia",
-                     "https://lun.ua/sale/vinnytsia/flats-nyzhnia-slovianka",
-                     "https://lun.ua/sale/vinnytsia/flats-pyrohova-st"],
-        residential_urls=[
-            "https://lun.ua/sale/vinnytsia/flats-maslozhyr",
-            "https://lun.ua/sale/vinnytsia/flats-viiskove-mistechko",
-            "https://lun.ua/sale/vinnytsia/flats-vinnytsia-barske-hwy",
-            "https://lun.ua/sale/vinnytsia/flats-buchmy-st"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/vinnytsia/flats-pyrohovo",
-            "https://lun.ua/sale/vinnytsia/flats-hnivanske-hwy",
-            "https://lun.ua/sale/vinnytsia/flats-ahronomichne",
-            "https://lun.ua/sale/vinnytsia/flats-vinnytski-khutory"
-        ],
-    ),
-    CityConfig(
-        city="Poltava",
-        geo_region="Center",
-        center_urls=["https://lun.ua/sale/poltava/flats-tsentr",
-                     "https://lun.ua/sale/poltava/flats-shevchenkivskyi-district"],
-        residential_urls=[
-            "https://lun.ua/sale/poltava/flats-kyivskyi-district",
-            "https://lun.ua/sale/poltava/flats-podilskyi-district",
-            "https://lun.ua/sale/poltava/flats-dublianshchyna"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/poltava/flats-rozsoshentsi",
-            "https://lun.ua/sale/poltava/flats-suprunivka",
-            "https://lun.ua/sale/poltava/flats-hozhuly",
-            "https://lun.ua/sale/poltava/flats-kovalivka-poltavskyi-district"
-        ],
-    ),
-    CityConfig(
-        city="Kropyvnytskyi",
-        geo_region="Center",
-        center_urls=["https://lun.ua/sale/kr/flats-tsentr",
-                     "https://lun.ua/sale/kr/flats-kovalivka",
-                     "https://lun.ua/sale/kr/flats-bieliaieva",
-                     "https://lun.ua/sale/kr/flats-krytyi-rynok"],
-        residential_urls=[
-            "https://lun.ua/sale/kr/flats-fortechnyi-district",
-            "https://lun.ua/sale/kr/flats-podilskyi-district",
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/kr/flats-nova-balashivka",
-            "https://lun.ua/sale/kr/flats-dolynska"
-        ],
-    ),
-    CityConfig(
-        city="Cherkasy",
-        geo_region="Center",
-        center_urls=["https://lun.ua/sale/cherkasy/flats-tsentr",
-                     "https://lun.ua/sale/cherkasy/flats-hoholia-st",
-                     "https://lun.ua/sale/cherkasy/flats-nadpilna-st",
-                     "https://lun.ua/sale/cherkasy/flats-pryportovyi"],
-        residential_urls=[
-            "https://lun.ua/sale/cherkasy/flats-700-richchia",
-            "https://lun.ua/sale/cherkasy/flats-ivana-mazepy-st",
-            "https://lun.ua/sale/cherkasy/flats-dniprovskyi"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/cherkasy/flats-pzr",
-            "https://lun.ua/sale/cherkasy/flats-sumhaitska-st",
-            "https://lun.ua/sale/cherkasy/flats-sosnivka",
-            "https://lun.ua/sale/cherkasy/flats-kanivska-st"
-        ],
-    ),
-
-    # EAST
-    CityConfig(
-        city="Kharkiv",
-        geo_region="East",
-        center_urls=["https://lun.ua/sale/kharkiv/flats-tsentr",
-                     "https://lun.ua/sale/kharkiv/flats-moskalivka"],
-        residential_urls=[
-            "https://lun.ua/sale/kharkiv/flats-pavlovo-pole",
-            "https://lun.ua/sale/kharkiv/flats-kholodnohirskyi-district",
-            "https://lun.ua/sale/kharkiv/flats-osnovianskyi-district",
-            "https://lun.ua/sale/kharkiv/flats-slobidskyi-district"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/kharkiv/flats-saltivka",
-            "https://lun.ua/sale/kharkiv/flats-nemyshlianskyi-district",
-            "https://lun.ua/sale/kharkiv/flats-industrialnyi-district",
-            "https://lun.ua/sale/kharkiv/flats-novobavarskyi-district"
-        ],
-    ),
-    CityConfig(
-        city="Dnipro",
-        geo_region="East",
-        center_urls=["https://lun.ua/sale/dnipro/flats-tsentr",
-                     "https://lun.ua/sale/dnipro/flats-tsentralnyi-district",
-                     "https://lun.ua/sale/dnipro/flats-shevchenkivskyi-district",
-                     "https://lun.ua/sale/dnipro/flats-sobornyi-district"
-                     ],
-        residential_urls=[
-            "https://lun.ua/sale/dnipro/flats-12-i-kvartal",
-            "https://lun.ua/sale/dnipro/flats-chechelivskyi-district",
-            "https://lun.ua/sale/dnipro/flats-nyzhnodniprovskyi-district",
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/dnipro/flats-novokodatskyi-district",
-            "https://lun.ua/sale/dnipro/flats-industrialnyi-district",
-            "https://lun.ua/sale/dnipro/flats-samarskyi-district",
-            "https://lun.ua/sale/dnipro/flats-lomivka"
-        ],
-    ),
-    CityConfig(
-        city="Zaporizhzhia",
-        geo_region="East",
-        center_urls=["https://lun.ua/sale/zp/flats-voznesenivskyi-district",
-                     "https://lun.ua/sale/zp/flats-oleksandrivskyi-district"],
-        residential_urls=[
-            "https://lun.ua/sale/zp/flats-zavodskyi-district",
-            "https://lun.ua/sale/zp/flats-dniprovskyi-district",
-            "https://lun.ua/sale/zp/flats-komunarskyi-district"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/zp/flats-khortytskyi-district",
-            "https://lun.ua/sale/zp/flats-shevchenkivskyi-district",
-            "https://lun.ua/sale/zp/flats-3-i-shevchenkivskyi",
-            "https://lun.ua/sale/zp/flats-17-i-mikroraion",
-            "https://lun.ua/sale/zp/flats-volodymyrivske"
-        ],
-    ),
-
-    # SOUTH
-    CityConfig(
-        city="Odesa",
-        geo_region="South",
-        center_urls=["https://lun.ua/sale/odesa/flats-tsentr",
-                     "https://lun.ua/sale/odesa/flats-prymorskyi-district",
-                     "https://lun.ua/sale/odesa/flats-moldavanka",
-                     "https://lun.ua/sale/odesa/flats-blyzhni-mlyny"],
-        residential_urls=[
-            "https://lun.ua/sale/odesa/flats-khadzhybeiskyi-district",
-            "https://lun.ua/sale/odesa/flats-serednii-fontan",
-            "https://lun.ua/sale/odesa/flats-arkadiia",
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/odesa/flats-kyivskyi-district",
-            "https://lun.ua/sale/odesa/flats-peresypskyi-district",
-            "https://lun.ua/sale/odesa/flats-tairova",
-            "https://lun.ua/sale/odesa/flats-velykyi-fontan",
-            "https://lun.ua/sale/odesa/flats-dacha-kovalevskoho",
-            "https://lun.ua/sale/odesa/flats-dmytryivka"
-        ],
-    ),
-    CityConfig(
-        city="Mykolaiv",
-        geo_region="South",
-        center_urls=["https://lun.ua/sale/mykolaiv/flats-tsentr",
-                     "https://lun.ua/sale/mykolaiv/flats-tsentralnyi-district",
-                     "https://lun.ua/sale/mykolaiv/flats-zavodskyi-district",
-                     "https://lun.ua/sale/mykolaiv/flats-slobidka"
-                     ],
-        residential_urls=[
-            "https://lun.ua/sale/mykolaiv/flats-inhulskyi-district",
-            "https://lun.ua/sale/mykolaiv/flats-soliani",
-            "https://lun.ua/sale/mykolaiv/flats-novyi-vodopii"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/mykolaiv/flats-korabelnyi-district",
-            "https://lun.ua/sale/mykolaiv/flats-kulbakino",
-            "https://lun.ua/sale/mykolaiv/flats-varvarivka",
-            "https://lun.ua/sale/mykolaiv/flats-matviivka",
-            "https://lun.ua/sale/mykolaiv/flats-ternivka"
-        ],
-    ),
-    CityConfig(
-        city="Kherson",
-        geo_region="South",
-        center_urls=["https://lun.ua/sale/kherson/flats-tsentr",
-                     "https://lun.ua/sale/kherson/flats-tsentralnyi-district"],
-        residential_urls=[
-            "https://lun.ua/sale/kherson/flats-tavriiskyi",
-            "https://lun.ua/sale/kherson/flats-pivnichnyi",
-            "https://lun.ua/sale/kherson/flats-dniprovskyi-district"
-        ],
-        outskirts_urls=[
-            "https://lun.ua/sale/kherson/flats-korabelnyi-district",
-        ],
-    ),
+    # CityConfig(
+    #     city="Rivne",
+    #     geo_region="West",
+    #     center_urls=["https://lun.ua/sale/rivne/flats-tsentr",
+    #                  "https://lun.ua/sale/rivne/flats-dvorets",
+    #                  "https://lun.ua/sale/rivne/flats-avtovokzal",
+    #                  "https://lun.ua/sale/rivne/flats-hrabnyk"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/rivne/flats-mototrek",
+    #         "https://lun.ua/sale/rivne/flats-studentska-st",
+    #         "https://lun.ua/sale/rivne/flats-basiv-kut",
+    #         "https://lun.ua/sale/rivne/flats-korolova-st"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/rivne/flats-pivnichnyi",
+    #         "https://lun.ua/sale/rivne/flats-novyi-dvir",
+    #         "https://lun.ua/sale/rivne/flats-mlynivska-st",
+    #         "https://lun.ua/sale/rivne/flats-kolodenka",
+    #         "https://lun.ua/sale/rivne/flats-barmaky"
+    #     ],
+    # ),
+    #
+    # # NORTH!!!!!!
+    # CityConfig(
+    #     city="Zhytomyr",
+    #     geo_region="North",
+    #     center_urls=["https://lun.ua/sale/zhytomyr/flats-tsentr"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/zhytomyr/flats-vokzal",
+    #         "https://lun.ua/sale/zhytomyr/flats-chudnivska-st",
+    #         "https://lun.ua/sale/zhytomyr/flats-seletska-st"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/zhytomyr/flats-oliivka-10016953",
+    #         "https://lun.ua/sale/zhytomyr/flats-zarichany-10007890",
+    #         "https://lun.ua/sale/zhytomyr/flats-hlybochytsia",
+    #         "https://lun.ua/sale/zhytomyr/flats-huiva"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Chernihiv",
+    #     geo_region="North",
+    #     center_urls=["https://lun.ua/sale/chernihiv/flats-tsentr",
+    #                  "https://lun.ua/sale/chernihiv/flats-val",
+    #                  "https://lun.ua/sale/chernihiv/flats-myru-ave",
+    #                  "https://lun.ua/sale/chernihiv/flats-liskovytsia",
+    #                  "https://lun.ua/sale/chernihiv/flats-miskyi-sad"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/chernihiv/flats-yalivshchyna",
+    #         "https://lun.ua/sale/chernihiv/flats-bobrovytsia",
+    #         "https://lun.ua/sale/chernihiv/flats-ivana-vyhovskoho-st",
+    #         "https://lun.ua/sale/chernihiv/flats-berizky"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/chernihiv/flats-rivnopillia",
+    #         "https://lun.ua/sale/chernihiv/flats-kozelets"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Sumy",
+    #     geo_region="North",
+    #     center_urls=["https://lun.ua/sale/sumy/flats-tsentr",
+    #                  "https://lun.ua/sale/sumy/flats-avtovokzal"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/sumy/flats-9-i-mikroraion",
+    #         "https://lun.ua/sale/sumy/flats-11-i-mikroraion",
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/sumy/flats-kurskyi",
+    #         "https://lun.ua/sale/sumy/flats-basy",
+    #         "https://lun.ua/sale/sumy/flats-bilopilskyi-shliakh-st",
+    #         "https://lun.ua/sale/sumy/flats-sad",
+    #         "https://lun.ua/sale/sumy/flats-kosivshchyna"
+    #     ],
+    # ),
+    #
+    # # CENTER
+    # CityConfig(
+    #     city="Vinnytsia",
+    #     geo_region="Center",
+    #     center_urls=["https://lun.ua/sale/vinnytsia/flats-tsentr",
+    #                  "https://lun.ua/sale/vinnytsia/flats-zamostia",
+    #                  "https://lun.ua/sale/vinnytsia/flats-nyzhnia-slovianka",
+    #                  "https://lun.ua/sale/vinnytsia/flats-pyrohova-st"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/vinnytsia/flats-maslozhyr",
+    #         "https://lun.ua/sale/vinnytsia/flats-viiskove-mistechko",
+    #         "https://lun.ua/sale/vinnytsia/flats-vinnytsia-barske-hwy",
+    #         "https://lun.ua/sale/vinnytsia/flats-buchmy-st"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/vinnytsia/flats-pyrohovo",
+    #         "https://lun.ua/sale/vinnytsia/flats-hnivanske-hwy",
+    #         "https://lun.ua/sale/vinnytsia/flats-ahronomichne",
+    #         "https://lun.ua/sale/vinnytsia/flats-vinnytski-khutory"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Poltava",
+    #     geo_region="Center",
+    #     center_urls=["https://lun.ua/sale/poltava/flats-tsentr",
+    #                  "https://lun.ua/sale/poltava/flats-shevchenkivskyi-district"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/poltava/flats-kyivskyi-district",
+    #         "https://lun.ua/sale/poltava/flats-podilskyi-district",
+    #         "https://lun.ua/sale/poltava/flats-dublianshchyna"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/poltava/flats-rozsoshentsi",
+    #         "https://lun.ua/sale/poltava/flats-suprunivka",
+    #         "https://lun.ua/sale/poltava/flats-hozhuly",
+    #         "https://lun.ua/sale/poltava/flats-kovalivka-poltavskyi-district"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Kropyvnytskyi",
+    #     geo_region="Center",
+    #     center_urls=["https://lun.ua/sale/kr/flats-tsentr",
+    #                  "https://lun.ua/sale/kr/flats-kovalivka",
+    #                  "https://lun.ua/sale/kr/flats-bieliaieva",
+    #                  "https://lun.ua/sale/kr/flats-krytyi-rynok"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/kr/flats-fortechnyi-district",
+    #         "https://lun.ua/sale/kr/flats-podilskyi-district",
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/kr/flats-nova-balashivka",
+    #         "https://lun.ua/sale/kr/flats-dolynska"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Cherkasy",
+    #     geo_region="Center",
+    #     center_urls=["https://lun.ua/sale/cherkasy/flats-tsentr",
+    #                  "https://lun.ua/sale/cherkasy/flats-hoholia-st",
+    #                  "https://lun.ua/sale/cherkasy/flats-nadpilna-st",
+    #                  "https://lun.ua/sale/cherkasy/flats-pryportovyi"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/cherkasy/flats-700-richchia",
+    #         "https://lun.ua/sale/cherkasy/flats-ivana-mazepy-st",
+    #         "https://lun.ua/sale/cherkasy/flats-dniprovskyi"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/cherkasy/flats-pzr",
+    #         "https://lun.ua/sale/cherkasy/flats-sumhaitska-st",
+    #         "https://lun.ua/sale/cherkasy/flats-sosnivka",
+    #         "https://lun.ua/sale/cherkasy/flats-kanivska-st"
+    #     ],
+    # ),
+    #
+    # # EAST
+    # CityConfig(
+    #     city="Kharkiv",
+    #     geo_region="East",
+    #     center_urls=["https://lun.ua/sale/kharkiv/flats-tsentr",
+    #                  "https://lun.ua/sale/kharkiv/flats-moskalivka"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/kharkiv/flats-pavlovo-pole",
+    #         "https://lun.ua/sale/kharkiv/flats-kholodnohirskyi-district",
+    #         "https://lun.ua/sale/kharkiv/flats-osnovianskyi-district",
+    #         "https://lun.ua/sale/kharkiv/flats-slobidskyi-district"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/kharkiv/flats-saltivka",
+    #         "https://lun.ua/sale/kharkiv/flats-nemyshlianskyi-district",
+    #         "https://lun.ua/sale/kharkiv/flats-industrialnyi-district",
+    #         "https://lun.ua/sale/kharkiv/flats-novobavarskyi-district"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Dnipro",
+    #     geo_region="East",
+    #     center_urls=["https://lun.ua/sale/dnipro/flats-tsentr",
+    #                  "https://lun.ua/sale/dnipro/flats-tsentralnyi-district",
+    #                  "https://lun.ua/sale/dnipro/flats-shevchenkivskyi-district",
+    #                  "https://lun.ua/sale/dnipro/flats-sobornyi-district"
+    #                  ],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/dnipro/flats-12-i-kvartal",
+    #         "https://lun.ua/sale/dnipro/flats-chechelivskyi-district",
+    #         "https://lun.ua/sale/dnipro/flats-nyzhnodniprovskyi-district",
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/dnipro/flats-novokodatskyi-district",
+    #         "https://lun.ua/sale/dnipro/flats-industrialnyi-district",
+    #         "https://lun.ua/sale/dnipro/flats-samarskyi-district",
+    #         "https://lun.ua/sale/dnipro/flats-lomivka"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Zaporizhzhia",
+    #     geo_region="East",
+    #     center_urls=["https://lun.ua/sale/zp/flats-voznesenivskyi-district",
+    #                  "https://lun.ua/sale/zp/flats-oleksandrivskyi-district"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/zp/flats-zavodskyi-district",
+    #         "https://lun.ua/sale/zp/flats-dniprovskyi-district",
+    #         "https://lun.ua/sale/zp/flats-komunarskyi-district"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/zp/flats-khortytskyi-district",
+    #         "https://lun.ua/sale/zp/flats-shevchenkivskyi-district",
+    #         "https://lun.ua/sale/zp/flats-3-i-shevchenkivskyi",
+    #         "https://lun.ua/sale/zp/flats-17-i-mikroraion",
+    #         "https://lun.ua/sale/zp/flats-volodymyrivske"
+    #     ],
+    # ),
+    #
+    # # SOUTH
+    # CityConfig(
+    #     city="Odesa",
+    #     geo_region="South",
+    #     center_urls=["https://lun.ua/sale/odesa/flats-tsentr",
+    #                  "https://lun.ua/sale/odesa/flats-prymorskyi-district",
+    #                  "https://lun.ua/sale/odesa/flats-moldavanka",
+    #                  "https://lun.ua/sale/odesa/flats-blyzhni-mlyny"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/odesa/flats-khadzhybeiskyi-district",
+    #         "https://lun.ua/sale/odesa/flats-serednii-fontan",
+    #         "https://lun.ua/sale/odesa/flats-arkadiia",
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/odesa/flats-kyivskyi-district",
+    #         "https://lun.ua/sale/odesa/flats-peresypskyi-district",
+    #         "https://lun.ua/sale/odesa/flats-tairova",
+    #         "https://lun.ua/sale/odesa/flats-velykyi-fontan",
+    #         "https://lun.ua/sale/odesa/flats-dacha-kovalevskoho",
+    #         "https://lun.ua/sale/odesa/flats-dmytryivka"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Mykolaiv",
+    #     geo_region="South",
+    #     center_urls=["https://lun.ua/sale/mykolaiv/flats-tsentr",
+    #                  "https://lun.ua/sale/mykolaiv/flats-tsentralnyi-district",
+    #                  "https://lun.ua/sale/mykolaiv/flats-zavodskyi-district",
+    #                  "https://lun.ua/sale/mykolaiv/flats-slobidka"
+    #                  ],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/mykolaiv/flats-inhulskyi-district",
+    #         "https://lun.ua/sale/mykolaiv/flats-soliani",
+    #         "https://lun.ua/sale/mykolaiv/flats-novyi-vodopii"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/mykolaiv/flats-korabelnyi-district",
+    #         "https://lun.ua/sale/mykolaiv/flats-kulbakino",
+    #         "https://lun.ua/sale/mykolaiv/flats-varvarivka",
+    #         "https://lun.ua/sale/mykolaiv/flats-matviivka",
+    #         "https://lun.ua/sale/mykolaiv/flats-ternivka"
+    #     ],
+    # ),
+    # CityConfig(
+    #     city="Kherson",
+    #     geo_region="South",
+    #     center_urls=["https://lun.ua/sale/kherson/flats-tsentr",
+    #                  "https://lun.ua/sale/kherson/flats-tsentralnyi-district"],
+    #     residential_urls=[
+    #         "https://lun.ua/sale/kherson/flats-tavriiskyi",
+    #         "https://lun.ua/sale/kherson/flats-pivnichnyi",
+    #         "https://lun.ua/sale/kherson/flats-dniprovskyi-district"
+    #     ],
+    #     outskirts_urls=[
+    #         "https://lun.ua/sale/kherson/flats-korabelnyi-district",
+    #     ],
+    # ),
 ]
 
 
@@ -533,7 +536,9 @@ CITIES: list[CityConfig] = [
 
 async def switch_to_usd_list(page: Page) -> None:
     try:
-        prices = await page.query_selector_all('[class*="RealtyCard_priceSqm"]')
+        prices = await page.query_selector_all(
+            '[class*="RealtyCard-module-scss-module"][class*="priceSqm"]'
+        )
         if prices:
             first_text = await prices[0].inner_text()
             if "$" in first_text:
@@ -581,7 +586,8 @@ async def get_urls_from_listing(
 
         try:
             await page.wait_for_selector(
-                '[class*="RealtyCard_propertyGrid"]', timeout=10000
+                '[class*="RealtyCard-module-scss-module"][class*="propertyGrid"]',
+                timeout=10000,
             )
             await page.wait_for_timeout(2000)
         except Exception:
@@ -632,7 +638,9 @@ async def get_urls_from_listing(
 
 async def switch_to_usd_detail(page: Page) -> None:
     try:
-        price_el = await page.query_selector('[class*="RealtyDetails_priceSqm"]')
+        price_el = await page.query_selector(
+            '[class*="RealtyDetails-module-scss-module"][class*="priceSqm"]'
+        )
         if price_el:
             price_text = await price_el.inner_text()
             if "$" in price_text:
@@ -759,7 +767,7 @@ async def parse_detail_page(url: str, page: Page, retries: int = 3) -> Apartment
             await page.wait_for_function(
                 '''() => {
                     return document.querySelector(".error-content") ||
-                           document.querySelector('[class*="RealtyDetails_priceSqm"]');
+                           document.querySelector('[class*="RealtyDetails-module-scss-module"][class*="priceSqm"]');
                 }''',
                 timeout=10000
             )
