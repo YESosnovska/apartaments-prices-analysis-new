@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+{% set active_page = "valuation" %}
+
+{% block title %}Оцінка вартості квартири{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <p class="eyebrow">Модуль оцінки · квартири</p>
+  <h1>Скільки коштує ця квартира?</h1>
+  <p class="lede">Вкажіть параметри об'єкта — модель поверне оцінку ціни за м² та загальної вартості.</p>
+</header>
+
+<div class="scope-switch" role="tablist" aria-label="Вибір ринку">
+  {% for key, s in scopes.items() %}
+    <a role="tab" aria-selected="{{ 'true' if key == scope else 'false' }}"
+       class="scope-tab {{ 'active' if key == scope else '' }}"
+       href="/valuation?scope={{ key }}">{{ s.label }}</a>
+  {% endfor %}
+</div>
+
+{% if not model_ready %}
+<div class="banner banner-warn">
+  Файл моделі <code>{{ cfg.artifact_file }}</code> ще не покладено в <code>models/</code>.
+  Форма нижче вже готова до роботи — вона запрацює одразу, як тільки з'явиться навчений <code>.joblib</code>
+  (зберігається функцією <code>save_production_pipeline(...)</code> у train-ноутбуці).
+</div>
+{% endif %}
+
+{% if error %}
+<div class="banner banner-error">{{ error }}</div>
+{% endif %}
+
+<div class="layout-grid">
+  <form method="post" action="/valuation" class="card form-card">
+    <input type="hidden" name="scope" value="{{ scope }}">
+
+    <fieldset>
+      <legend>Локація та розмір</legend>
+
+      <div class="field">
+        <label for="cat_field">{{ 'Район' if scope == 'kyiv' else 'Місто' }}</label>
+        <select id="cat_field" name="{{ cfg.cat_field }}" required>
+          <option value="" disabled {{ 'selected' if not form_values.get(cfg.cat_field) else '' }}>Оберіть...</option>
+          {% for code, label in cfg.cat_options %}
+            <option value="{{ code }}" {{ 'selected' if form_values.get(cfg.cat_field) == code else '' }}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      {% if cfg.has_zone_field %}
+      <div class="field">
+        <label for="district_zone">Зона в місті</label>
+        <select id="district_zone" name="district_zone" required>
+          <option value="" disabled {{ 'selected' if not form_values.get('district_zone') else '' }}>Оберіть...</option>
+          {% for code, label in cfg.zone_options %}
+            <option value="{{ code }}" {{ 'selected' if form_values.get('district_zone') == code else '' }}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+
+      <div class="field-row">
+        <div class="field">
+          <label for="area">Загальна площа, м²</label>
+          <input type="number" step="0.1" min="1" id="area" name="area" required
+                 value="{{ form_values.get('area', '') }}" placeholder="напр. 62.5">
+        </div>
+        <div class="field">
+          <label for="num_of_rooms">Кількість кімнат</label>
+          <input type="number" step="1" min="1" id="num_of_rooms" name="num_of_rooms" required
+                 value="{{ form_values.get('num_of_rooms', '') }}" placeholder="напр. 2">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="living_area">Житлова площа, м² <span class="opt">(необов'язково)</span></label>
+          <input type="number" step="0.1" min="0" id="living_area" name="living_area"
+                 value="{{ form_values.get('living_area', '') }}">
+        </div>
+        <div class="field">
+          <label for="kitchen_area">Площа кухні, м² <span class="opt">(необов'язково)</span></label>
+          <input type="number" step="0.1" min="0" id="kitchen_area" name="kitchen_area"
+                 value="{{ form_values.get('kitchen_area', '') }}">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="floor">Поверх</label>
+          <input type="number" step="1" min="-5" id="floor" name="floor" required
+                 value="{{ form_values.get('floor', '') }}">
+        </div>
+        <div class="field">
+          <label for="floors_in_house">Поверховість будинку</label>
+          <input type="number" step="1" min="1" id="floors_in_house" name="floors_in_house" required
+                 value="{{ form_values.get('floors_in_house', '') }}">
+        </div>
+      </div>
+      <p class="hint hint-inline" id="floor_hint" hidden>
+        Поверх не може перевищувати поверховість будинку.
+      </p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="distance_to_center_km">Відстань до центру, км</label>
+          <input type="number" step="0.1" min="0" id="distance_to_center_km" name="distance_to_center_km" required
+                 value="{{ form_values.get('distance_to_center_km', '') }}">
+        </div>
+        <div class="field">
+          <label for="year_of_building">Рік будівництва <span class="opt">(необов'язково)</span></label>
+          <input type="number" step="1" min="1900" max="2030" id="year_of_building" name="year_of_building"
+                 value="{{ form_values.get('year_of_building', '') }}">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="bedroom_count">Кількість спалень <span class="opt">(необов'язково)</span></label>
+          <input type="number" step="1" min="0" id="bedroom_count" name="bedroom_count"
+                 value="{{ form_values.get('bedroom_count', '') }}">
+        </div>
+        <div class="field">
+          <label for="toilets_count">Кількість санвузлів <span class="opt">(необов'язково)</span></label>
+          <input type="number" step="1" min="0" id="toilets_count" name="toilets_count"
+                 value="{{ form_values.get('toilets_count', '') }}">
+        </div>
+      </div>
+      <div class="field">
+        <label for="balcony_count">Кількість балконів <span class="opt">(необов'язково)</span></label>
+        <input type="number" step="1" min="0" id="balcony_count" name="balcony_count"
+               value="{{ form_values.get('balcony_count', '') }}">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Тип будинку та матеріали</legend>
+
+      <div class="field">
+        <label for="house_type">Тип будинку <span class="opt">(необов'язково)</span></label>
+        <select id="house_type" name="house_type">
+          <option value="">Не вказано</option>
+          {% for code, label in cfg.house_type_labels.items() %}
+            <option value="{{ code }}" {{ 'selected' if form_values.get('house_type') == code else '' }}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="wall_type">Матеріал стін <span class="opt">(необов'язково)</span></label>
+          <select id="wall_type" name="wall_type">
+            <option value="">Не вказано</option>
+            {% for code, label in wall_type_labels.items() %}
+              <option value="{{ code }}" {{ 'selected' if form_values.get('wall_type') == code else '' }}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="heating">Опалення <span class="opt">(необов'язково)</span></label>
+          <select id="heating" name="heating">
+            <option value="">Не вказано</option>
+            {% for code, label in heating_labels.items() %}
+              <option value="{{ code }}" {{ 'selected' if form_values.get('heating') == code else '' }}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="kitchen_type">Тип кухні <span class="opt">(необов'язково)</span></label>
+          <select id="kitchen_type" name="kitchen_type">
+            <option value="">Не вказано</option>
+            {% for code, label in kitchen_type_labels.items() %}
+              <option value="{{ code }}" {{ 'selected' if form_values.get('kitchen_type') == code else '' }}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="hot_water_type">Гаряча вода <span class="opt">(необов'язково)</span></label>
+          <select id="hot_water_type" name="hot_water_type">
+            <option value="">Не вказано</option>
+            {% for code, label in hot_water_type_labels.items() %}
+              <option value="{{ code }}" {{ 'selected' if form_values.get('hot_water_type') == code else '' }}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="ceiling_height">Висота стелі, м <span class="opt">(необов'язково)</span></label>
+        <input type="number" step="0.05" min="0" id="ceiling_height" name="ceiling_height"
+               value="{{ form_values.get('ceiling_height', '') }}">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Автономність та стан</legend>
+
+      {% for field, label in tristate_fields %}
+      <div class="field field-tristate">
+        <label>{{ label }}</label>
+        <div class="tristate">
+          <label><input type="radio" name="{{ field }}" value="yes" {{ 'checked' if form_values.get(field) == 'yes' else '' }}> Так</label>
+          <label><input type="radio" name="{{ field }}" value="no" {{ 'checked' if form_values.get(field) == 'no' else '' }}> Ні</label>
+          <label><input type="radio" name="{{ field }}" value="" {{ 'checked' if not form_values.get(field) else '' }}> Невідомо</label>
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="field-row checks">
+        <label class="checkbox" id="in_residential_complex_label" title="Недоступно для будинків, збудованих до 1998 -- поняття «житловий комплекс» як формат забудови для них нетипове">
+          <input type="checkbox" id="in_residential_complex" name="in_residential_complex" {{ 'checked' if form_values.get('in_residential_complex') == 'on' else '' }}> У житловому комплексі
+        </label>
+        <label class="checkbox"><input type="checkbox" id="has_poi" name="has_poi" {{ 'checked' if form_values.get('has_poi') == 'on' else '' }}> Є важлива точка інтересу поруч (школа/парк/метро)</label>
+      </div>
+      <p class="hint hint-inline" id="in_residential_complex_hint" hidden>
+        Недоступно, бо вказаний рік будівництва — до 1998 (поняття «житловий комплекс» для таких будинків нетипове).
+      </p>
+
+      <div class="field">
+        <label for="poi_distance_m">Відстань до точки інтересу, м <span class="opt">(доступно, якщо позначено «є точка інтересу поруч»; максимум 1000 м)</span></label>
+        <input type="number" step="1" min="0" max="1000" id="poi_distance_m" name="poi_distance_m" disabled
+               value="{{ form_values.get('poi_distance_m', '') }}">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Додаткові зручності</legend>
+      <div class="field-row checks">
+        {% for field, label in amenity_checkbox_fields %}
+        <label class="checkbox"><input type="checkbox" name="{{ field }}" {{ 'checked' if form_values.get(field) == 'on' else '' }}> {{ label }}</label>
+        {% endfor %}
+      </div>
+    </fieldset>
+
+    <button type="submit" class="btn-primary">Оцінити вартість</button>
+  </form>
+
+  <div class="card result-card">
+    {% if result %}
+      <div class="stamp">
+        <div class="stamp-ticks" aria-hidden="true"></div>
+        <p class="stamp-label">Оцінка ціни за м²</p>
+        <p class="stamp-value">${{ "{:,.0f}".format(result.price_per_sqm).replace(",", " ") }}</p>
+        {% if result.price_per_sqm_low is defined %}
+        <p class="stamp-range">
+          діапазон: ${{ "{:,.0f}".format(result.price_per_sqm_low).replace(",", " ") }}
+          – ${{ "{:,.0f}".format(result.price_per_sqm_high).replace(",", " ") }}
+        </p>
+        {% endif %}
+        <hr>
+        <p class="stamp-label">Орієнтовна загальна вартість</p>
+        <p class="stamp-value stamp-total">${{ "{:,.0f}".format(result.total_price).replace(",", " ") }}</p>
+        {% if result.total_price_low is defined %}
+        <p class="stamp-range">
+          діапазон: ${{ "{:,.0f}".format(result.total_price_low).replace(",", " ") }}
+          – ${{ "{:,.0f}".format(result.total_price_high).replace(",", " ") }}
+        </p>
+        {% endif %}
+      </div>
+      <p class="result-note">
+        Оцінка базується на моделі для «{{ cfg.label }}». Це орієнтир, а не остаточна ціна —
+        враховуйте стан ринку та індивідуальні особливості об'єкта.
+        {% if result.interval_label is defined %}
+        <br><strong>Діапазон</strong> ({{ result.interval_label }}) — персональна оцінка невизначеності
+        саме для цього об'єкта: для одних квартир розкид цін ширший, для інших — вужчий,
+        і це нормально (<em>ціни на нерухомість природно гетероскедастичні</em>).
+        {% endif %}
+      </p>
+    {% else %}
+      <div class="result-placeholder">
+        <svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true">
+          <rect x="10" y="14" width="44" height="36" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+          <line x1="16" y1="24" x2="48" y2="24" stroke="currentColor" stroke-width="2"/>
+          <line x1="16" y1="32" x2="40" y2="32" stroke="currentColor" stroke-width="2"/>
+          <line x1="16" y1="40" x2="34" y2="40" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <p>Заповніть форму зліва — результат оцінки з'явиться тут.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+(function () {
+  var yearInput = document.getElementById("year_of_building");
+  var complexCheckbox = document.getElementById("in_residential_complex");
+  var complexHint = document.getElementById("in_residential_complex_hint");
+  var poiCheckbox = document.getElementById("has_poi");
+  var poiDistanceInput = document.getElementById("poi_distance_m");
+  var floorInput = document.getElementById("floor");
+  var floorsInHouseInput = document.getElementById("floors_in_house");
+  var floorHint = document.getElementById("floor_hint");
+
+  var MIN_YEAR_FOR_COMPLEX = 1998;
+
+  function syncResidentialComplexLock() {
+    var year = parseInt(yearInput.value, 10);
+    var tooOld = !isNaN(year) && year < MIN_YEAR_FOR_COMPLEX;
+    complexCheckbox.disabled = tooOld;
+    complexHint.hidden = !tooOld;
+    if (tooOld) {
+      complexCheckbox.checked = false;
+    }
+  }
+
+  function syncPoiDistanceAvailability() {
+    poiDistanceInput.disabled = !poiCheckbox.checked;
+    if (!poiCheckbox.checked) {
+      poiDistanceInput.value = "";
+    }
+  }
+
+  function validateFloorVsFloorsInHouse() {
+    var floor = parseInt(floorInput.value, 10);
+    var floorsInHouse = parseInt(floorsInHouseInput.value, 10);
+    var invalid = !isNaN(floor) && !isNaN(floorsInHouse) && floor > floorsInHouse;
+    floorHint.hidden = !invalid;
+    floorInput.setCustomValidity(invalid ? "Поверх не може перевищувати поверховість будинку" : "");
+  }
+
+  yearInput.addEventListener("input", syncResidentialComplexLock);
+  poiCheckbox.addEventListener("change", syncPoiDistanceAvailability);
+  floorInput.addEventListener("input", validateFloorVsFloorsInHouse);
+  floorsInHouseInput.addEventListener("input", validateFloorVsFloorsInHouse);
+
+  syncResidentialComplexLock();
+  syncPoiDistanceAvailability();
+  validateFloorVsFloorsInHouse();
+})();
+</script>
+{% endblock %}

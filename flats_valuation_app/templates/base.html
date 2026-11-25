@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Оцінка вартості нерухомості{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="28" height="28">
+            <path d="M4 16 L16 5 L28 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 15 V27 H24 V15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="16" y1="20" x2="16" y2="27" stroke="currentColor" stroke-width="2.2"/>
+          </svg>
+        </span>
+        <div class="brand-text">
+          <span class="brand-title">Оцінка&nbsp;нерухомості</span>
+          <span class="brand-sub">внутрішній інструмент аналітики</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="/valuation" class="nav-item {{ 'active' if active_page == 'valuation' else '' }}">
+          <span class="nav-index">01</span> Оцінка вартості
+        </a>
+        <a href="/dashboards/kyiv" class="nav-item {{ 'active' if active_page == 'dashboards_kyiv' else '' }}">
+          <span class="nav-index">02</span> Дашборд · Київ
+        </a>
+
+        <div class="nav-group">
+          <span class="nav-group-label"><span class="nav-index">03</span> Дашборд · обл. центри</span>
+          <a href="/dashboards/regions/comparison"
+             class="nav-item nav-subitem {{ 'active' if active_page == 'dashboards_regions_comparison' else '' }}">
+            Порівняння міст
+          </a>
+          <a href="/dashboards/regions/price-formation"
+             class="nav-item nav-subitem {{ 'active' if active_page == 'dashboards_regions_price_formation' else '' }}">
+            Формування ціни за м²
+          </a>
+        </div>
+      </nav>
+
+    </aside>
+
+    <main class="content {% block content_class %}{% endblock %}">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>
